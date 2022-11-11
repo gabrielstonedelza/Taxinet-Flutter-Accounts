@@ -32,7 +32,7 @@ class _ExpenseDetailState extends State<ExpenseDetail> {
         appBar: AppBar(
           backgroundColor:Colors.transparent,
           elevation:0,
-          title: const Text("Expnses",),
+          title: const Text("Expenses",),
           leading: IconButton(
               onPressed: () {
                 Get.back();
@@ -60,6 +60,9 @@ class _ExpenseDetailState extends State<ExpenseDetail> {
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              Text(items['item_name']),
+                              const SizedBox(height: 5),
+                              Text(items['quantity'].toString()),
                               const SizedBox(height: 5),
                               Text("GHS ${items['amount']}"),
                               const SizedBox(height: 5),

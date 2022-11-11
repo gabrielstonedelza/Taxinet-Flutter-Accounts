@@ -7,7 +7,9 @@ import 'package:taxinet_accounts/splashscreen.dart';
 import 'controller/expensescontroller.dart';
 import 'controller/inventoriescontroller.dart';
 import 'controller/logincontroller.dart';
+import 'controller/registrationcontroller.dart';
 import 'controller/requestscontroller.dart';
+import 'controller/stockscontroller.dart';
 import 'controller/usercontroller.dart';
 import 'controller/walletcontroller.dart';
 
@@ -22,6 +24,8 @@ void main() async{
   Get.put(ExpensesController());
   Get.put(RequestController());
   Get.put(UserController());
+  Get.put(MyRegistrationController());
+  Get.put(StocksController());
   runApp(const MyApp());
 }
 

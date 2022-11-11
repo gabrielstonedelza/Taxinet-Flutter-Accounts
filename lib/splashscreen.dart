@@ -42,7 +42,7 @@ class _SplashScreenState extends State<SplashScreen> {
           }
       );
     } else {
-      Timer(const Duration(seconds:7),
+      Timer(const Duration(seconds:10),
               () => Get.offAll(() => const NewLogin()));
     }
   }

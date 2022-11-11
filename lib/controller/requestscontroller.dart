@@ -24,6 +24,7 @@ class RequestController extends GetxController{
   List detailScheduleItems = [];
   List allDrivers = [];
   late List allPassengers = [];
+  List promoters = [];
   List allAssignedDrivers = [];
   late List allInvestors = [];
   bool rideStarted = false;
@@ -186,6 +187,28 @@ class RequestController extends GetxController{
       if (response.statusCode == 200) {
         var jsonData = jsonDecode(response.body);
         allDrivers.assignAll(jsonData);
+        update();
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print(e.toString());
+      }
+    } finally {
+      isLoading = false;
+    }
+  }
+
+  Future<void> getAllPromoters() async {
+    try {
+      isLoading = true;
+      const walletUrl = "https://taxinetghana.xyz/all_promoters_profile/";
+      var link = Uri.parse(walletUrl);
+      http.Response response = await http.get(link, headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      });
+      if (response.statusCode == 200) {
+        var jsonData = jsonDecode(response.body);
+        promoters.assignAll(jsonData);
         update();
       }
     } catch (e) {

@@ -39,8 +39,6 @@ dependencies:
   shimmer: ^2.0.0
   font_awesome_flutter: ^10.1.0
   animate_do:
-  connectivity_plus:
-  internet_connection_checker:
   lottie:
   modal_bottom_sheet:
   animated_text_kit:

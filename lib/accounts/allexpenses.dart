@@ -34,30 +34,33 @@ class _AllExpensesState extends State<AllExpenses> {
           ),
         ),
         body: GetBuilder<ExpensesController>(builder:(controller){
-          return ListView.builder(
-              itemCount: controller.expensesDates != null ? controller.expensesDates.length : 0,
-              itemBuilder: (context,index){
-                items = controller.expensesDates[index];
-                return SlideInUp(
-                  animate: true,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Card(
-                        elevation: 12,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: ListTile(
-                          onTap: (){
-                            Get.to(() => ExpenseDetail(requested_date:controller.expensesDates[index]));
-                          },
-                          title: Text(items),
-                        )
+          return Padding(
+            padding: const EdgeInsets.only(left:18.0,right:18),
+            child: ListView.builder(
+                itemCount: controller.expensesDates != null ? controller.expensesDates.length : 0,
+                itemBuilder: (context,index){
+                  items = controller.expensesDates[index];
+                  return SlideInUp(
+                    animate: true,
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Card(
+                          elevation: 12,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: ListTile(
+                            onTap: (){
+                              Get.to(() => ExpenseDetail(requested_date:controller.expensesDates[index]));
+                            },
+                            title: Text(items),
+                          )
+                      ),
                     ),
-                  ),
 
-                );
-              }
+                  );
+                }
+            ),
           );
         }),
 

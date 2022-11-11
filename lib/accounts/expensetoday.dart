@@ -52,6 +52,10 @@ class _ExpensesState extends State<Expenses> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const SizedBox(height: 5),
+                                Text(items['item_name']),
+                                const SizedBox(height: 5),
+                                Text(items['quantity'].toString()),
+                                const SizedBox(height: 5),
                                 Text("GHS ${items['amount']}"),
                                 const SizedBox(height: 5),
                                 Text(items['reason']),

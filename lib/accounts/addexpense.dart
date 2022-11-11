@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:get_storage/get_storage.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
+
 
 import '../constants/app_colors.dart';
 import '../homepage.dart';
@@ -23,9 +23,13 @@ class _AddExpenseState extends State<AddExpense> {
   _AddExpenseState({required this.driver});
   late final TextEditingController _amountController;
   late final TextEditingController _reasonController;
+  late final TextEditingController _itemNameController;
+  late final TextEditingController _quantityController;
   final _formKey = GlobalKey<FormState>();
 
   final FocusNode _amountFocusNode = FocusNode();
+  final FocusNode _itemNameFocusNode = FocusNode();
+  final FocusNode _quantityFocusNode = FocusNode();
   final FocusNode _reasonFocusNode = FocusNode();
   bool isPosting = false;
   final storage = GetStorage();
@@ -55,7 +59,9 @@ class _AddExpenseState extends State<AddExpense> {
       "driver" :driver,
           "user": driver,
           "amount": _amountController.text,
-          "reason":_reasonController.text
+          "reason":_reasonController.text,
+          "item_name":_itemNameController.text,
+          "quantity":_quantityController.text
         });
 
     if (response.statusCode == 201) {
@@ -78,10 +84,7 @@ class _AddExpenseState extends State<AddExpense> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    internetSubscription = InternetConnectionChecker().onStatusChange.listen((status){
-      final hasInternet = status == InternetConnectionStatus.connected;
-      setState(()=> this.hasInternet = hasInternet);
-    });
+
     if (storage.read("userToken") != null) {
       uToken = storage.read("userToken");
     }
@@ -90,6 +93,8 @@ class _AddExpenseState extends State<AddExpense> {
     }
     _amountController = TextEditingController();
     _reasonController = TextEditingController();
+    _itemNameController = TextEditingController();
+    _quantityController = TextEditingController();
   }
 
 
@@ -123,13 +128,85 @@ class _AddExpenseState extends State<AddExpense> {
                       borderRadius: BorderRadius.circular(16)),
                   child: Center(
                     child: TextFormField(
+                      controller: _itemNameController,
+                      focusNode: _itemNameFocusNode,
+                      decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          prefixIcon: Icon(
+                            Icons.person,
+                            color: Colors.transparent
+                          ),
+                          hintText: "Item name",
+                          hintStyle: TextStyle(color: defaultTextColor1)),
+                      cursorColor: defaultTextColor1,
+                      style: const TextStyle(color: defaultTextColor1),
+                      keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.next,
+                      validator: (value){
+                        if(value!.isEmpty){
+                          return "Enter item name";
+                        }
+                        else{
+                          return null;
+                        }
+                      },
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                Container(
+                  height: size.height * 0.08,
+                  width: size.width * 0.8,
+                  decoration: BoxDecoration(
+                      color: Colors.grey[500]?.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(16)),
+                  child: Center(
+                    child: TextFormField(
+                      controller: _quantityController,
+                      focusNode: _quantityFocusNode,
+                      decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          prefixIcon: Icon(
+                            Icons.person,
+                            color: Colors.transparent
+                          ),
+                          hintText: "Quantity",
+                          hintStyle: TextStyle(color: defaultTextColor1)),
+                      cursorColor: defaultTextColor1,
+                      style: const TextStyle(color: defaultTextColor1),
+                      keyboardType: TextInputType.number,
+                      textInputAction: TextInputAction.next,
+                      validator: (value){
+                        if(value!.isEmpty){
+                          return "Enter quantity";
+                        }
+                        else{
+                          return null;
+                        }
+                      },
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                Container(
+                  height: size.height * 0.08,
+                  width: size.width * 0.8,
+                  decoration: BoxDecoration(
+                      color: Colors.grey[500]?.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(16)),
+                  child: Center(
+                    child: TextFormField(
                       controller: _amountController,
                       focusNode: _amountFocusNode,
                       decoration: const InputDecoration(
                           border: InputBorder.none,
                           prefixIcon: Icon(
                             Icons.person,
-                            color: defaultTextColor1,
+                            color: Colors.transparent,
                           ),
                           hintText: "amount",
                           hintStyle: TextStyle(color: defaultTextColor1)),
@@ -165,7 +242,7 @@ class _AddExpenseState extends State<AddExpense> {
                           border: InputBorder.none,
                           prefixIcon: Icon(
                             Icons.person,
-                            color: defaultTextColor1,
+                            color: Colors.transparent
                           ),
                           hintText: "Reason",
                           hintStyle: TextStyle(color: defaultTextColor1)),

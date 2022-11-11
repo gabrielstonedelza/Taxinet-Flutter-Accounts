@@ -2,7 +2,6 @@ import 'dart:async';
 
 import "package:flutter/material.dart";
 import 'package:get_storage/get_storage.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:url_launcher/url_launcher.dart';
 import "package:get/get.dart";
 import '../../constants/app_colors.dart';
@@ -58,10 +57,7 @@ class _NewLoginState extends State<NewLogin> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    internetSubscription = InternetConnectionChecker().onStatusChange.listen((status){
-      final hasInternet = status == InternetConnectionStatus.connected;
-      setState(()=> this.hasInternet = hasInternet);
-    });
+
     if (storage.read("passenger_username") != null) {
       username = storage.read("passenger_username");
     }
