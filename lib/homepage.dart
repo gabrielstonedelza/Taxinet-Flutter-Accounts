@@ -328,12 +328,24 @@ class _HomePageState extends State<HomePage> {
                   Expanded(
                     child: GestureDetector(
                       onTap: (){
-                        Get.to(() => const Stocks());
+                        // Get.to(() => const Stocks());
                       },
                       child: Card(
                         elevation: 12,
                         child: Container(
-
+                          height:130,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10)
+                          ),
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset("assets/images/investor.png",width:42),
+                                const SizedBox(height:20),
+                                const Text("Investors",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold,color: Colors.black),)
+                              ]
+                          ),
                         ),
                       ),
                     ),

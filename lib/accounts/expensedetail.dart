@@ -56,21 +56,54 @@ class _ExpenseDetailState extends State<ExpenseDetail> {
                         ),
                         child: ListTile(
 
-                          title: Text(items['get_username']),
+                          title: Padding(
+                            padding: const EdgeInsets.only(top:10.0,bottom:10.0),
+                            child: Row(
+                              children: [
+                                const Text("Driver: ",style:TextStyle(fontWeight: FontWeight.bold,)),
+                                Text(items['get_username']),
+                              ],
+                            ),
+                          ),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(items['item_name']),
+                              Row(
+                                children: [
+                                  const Text("Item Name: ",style:TextStyle(fontWeight: FontWeight.bold,)),
+                                  Text(items['item_name']),
+                                ],
+                              ),
                               const SizedBox(height: 5),
-                              Text(items['quantity'].toString()),
+                              Row(
+                                children: [
+                                  const Text("quantity: ",style:TextStyle(fontWeight: FontWeight.bold,)),
+                                  Text(items['quantity'].toString()),
+                                ],
+                              ),
                               const SizedBox(height: 5),
-                              Text("GHS ${items['amount']}"),
+                              Row(
+                                children: [
+                                  const Text("Amount: ",style:TextStyle(fontWeight: FontWeight.bold,)),
+                                  Text("GHS ${items['amount']}"),
+                                ],
+                              ),
                               const SizedBox(height: 5),
-                              Text(items['reason']),
-                              const SizedBox(height: 5),
-                              Text(items['date_requested']),
-                              const SizedBox(height: 5),
-                              Text(items['time_requested'].toString().split(".").first),
+                              Row(
+                                children: [
+                                  const Text("Reason: ",style:TextStyle(fontWeight: FontWeight.bold,)),
+                                  Text(items['reason']),
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(items['date_requested']),
+                                  const SizedBox(height: 5),
+                                  Text(items['time_requested'].toString().split(".").first),
+                                ],
+                              ),
                             ],
                           ),
                         )
