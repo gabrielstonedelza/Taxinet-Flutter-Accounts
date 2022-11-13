@@ -5,6 +5,7 @@ import "package:get/get.dart";
 import 'package:get_storage/get_storage.dart';
 import 'accounts/addexpenselists.dart';
 import 'accounts/alldrivers.dart';
+import 'accounts/allusers.dart';
 import 'accounts/drivers.dart';
 import 'accounts/expensetoday.dart';
 import 'accounts/passengers.dart';
@@ -69,6 +70,8 @@ class _HomePageState extends State<HomePage> {
     requestController.getAllInvestors();
     requestController.getAllAssignedDrivers();
     requestController.getAllPromoters();
+    requestController.fetchUsers();
+    requestController.fetchBlockedUsers();
     userController.getUserProfile(uToken);
     userController.getAllUsers();
     userController.getAllDrivers();
@@ -92,6 +95,8 @@ class _HomePageState extends State<HomePage> {
       requestController.getAllInvestors();
       requestController.getAllAssignedDrivers();
       requestController.getAllPromoters();
+      requestController.fetchUsers();
+      requestController.fetchBlockedUsers();
       userController.getUserProfile(uToken);
       userController.getAllUsers();
       userController.getAllDrivers();
@@ -113,7 +118,15 @@ class _HomePageState extends State<HomePage> {
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const SizedBox(width:40),
+            GestureDetector(
+                onTap: (){
+                  Get.to(()=> const AllUsers());
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom:18.0),
+                  child: Image.asset("assets/images/group.png",width:60,height:60,fit: BoxFit.cover,),
+                )),
+            const SizedBox(width:20),
             Padding(
               padding: const EdgeInsets.only(left:18.0,right:18),
               child: Row(

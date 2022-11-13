@@ -28,6 +28,8 @@ class RequestController extends GetxController{
   List allAssignedDrivers = [];
   late List allInvestors = [];
   bool rideStarted = false;
+  late List allUsers = [];
+  late List allBlockedUsers = [];
 
 
   @override
@@ -40,6 +42,33 @@ class RequestController extends GetxController{
     if (storage.read("username") != null) {
       username = storage.read("username");
     }
+  }
+
+  fetchUsers()async{
+    const url = "https://taxinetghana.xyz/all_users/";
+    var myLink = Uri.parse(url);
+    final response = await http.get(myLink);
+
+    if(response.statusCode ==200){
+      final codeUnits = response.body.codeUnits;
+      var jsonData = const Utf8Decoder().convert(codeUnits);
+      allUsers = json.decode(jsonData);
+      update();
+    }
+
+  }
+  fetchBlockedUsers()async{
+    const url = "https://taxinetghana.xyz/get_all_blocked_users/";
+    var myLink = Uri.parse(url);
+    final response = await http.get(myLink,);
+
+    if(response.statusCode ==200){
+      final codeUnits = response.body.codeUnits;
+      var jsonData = const Utf8Decoder().convert(codeUnits);
+      allBlockedUsers = json.decode(jsonData);
+      update();
+    }
+
   }
 //
   Future<void> getActiveSchedules() async {
