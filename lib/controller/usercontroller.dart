@@ -166,7 +166,6 @@ class UserController extends GetxController {
           }
         }
         update();
-
       }
       else{
         if (kDebugMode) {

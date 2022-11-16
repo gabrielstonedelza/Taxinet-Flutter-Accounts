@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import "package:flutter/material.dart";
 import 'package:get/get.dart';
 
@@ -30,6 +32,34 @@ class _AddDrivesSalaryState extends State<AddDrivesSalary> {
   final FocusNode _amountFocusNode = FocusNode();
   bool isPosting = false;
   final storage = GetStorage();
+  String deDriver = "";
+  String walletId = "";
+  String initialWallet = "0.0";
+  bool isLoading = true;
+
+
+  Future<void> getDriversWallet() async {
+    final walletUrl = "https://taxinetghana.xyz/get_wallet_by_username/$username/";
+    var link = Uri.parse(walletUrl);
+    http.Response response = await http.get(link, headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    });
+    if (response.statusCode == 200) {
+      final codeUnits = response.body;
+      var jsonData = jsonDecode(codeUnits);
+      deDriver = jsonData['user'].toString();
+      walletId = jsonData['id'].toString();
+      initialWallet = jsonData['amount'].toString();
+    }
+    else{
+      if (kDebugMode) {
+        print(response.body);
+      }
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
 
   void _startPosting()async{
     setState(() {
@@ -57,6 +87,8 @@ class _AddDrivesSalaryState extends State<AddDrivesSalary> {
         });
 
     if (response.statusCode == 201) {
+      double amount = double.parse(initialWallet) + double.parse(_amountController.text);
+      updateWallet(walletId,amount.toString() , deDriver);
       Get.offAll(()=> const HomePage());
     }
     else {
@@ -72,11 +104,42 @@ class _AddDrivesSalaryState extends State<AddDrivesSalary> {
     }
   }
 
+  updateWallet(String id,String amount,String user)async {
+    final requestUrl = "https://taxinetghana.xyz/admin_update_wallet/$id/";
+    final myLink = Uri.parse(requestUrl);
+    final response = await http.put(myLink, headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      'Accept': 'application/json',
+      // "Authorization": "Token $uToken"
+    }, body: {
+      "amount" : amount,
+      "user" : user
+    });
+    if(response.statusCode == 200){
+      setState(() {
+      });
+
+      Get.snackbar("Success", "wallet was updated",
+          colorText: defaultTextColor1,
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: primaryColor,
+          duration: const Duration(seconds: 5)
+      );
+    }
+    else{
+      if (kDebugMode) {
+        // print(response.body);
+      }
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _amountController = TextEditingController();
+    getDriversWallet();
+    print(initialWallet);
   }
 
 
@@ -96,7 +159,12 @@ class _AddDrivesSalaryState extends State<AddDrivesSalary> {
               icon:const Icon(Icons.arrow_back,color:defaultTextColor2)
           ),
         ),
-        body:ListView(
+        body:isLoading ? const Center(
+          child: CircularProgressIndicator.adaptive(
+            strokeWidth: 5,
+            backgroundColor: primaryColor
+          )
+        ) :ListView(
           children: [
             Form(
                 key: _formKey,
@@ -155,6 +223,11 @@ class _AddDrivesSalaryState extends State<AddDrivesSalary> {
                       width: size.width * 0.8,
                       child: RawMaterialButton(
                         onPressed: () {
+                          FocusScopeNode currentFocus = FocusScope.of(context);
+
+                          if (!currentFocus.hasPrimaryFocus) {
+                            currentFocus.unfocus();
+                          }
                           _startPosting();
                           if (_formKey.currentState!.validate()) {
                             addSalary();

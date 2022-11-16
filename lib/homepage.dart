@@ -3,10 +3,10 @@ import 'dart:async';
 import "package:flutter/material.dart";
 import "package:get/get.dart";
 import 'package:get_storage/get_storage.dart';
+import 'package:taxinet_accounts/shimmers/shimmerwidget.dart';
 import 'accounts/addexpenselists.dart';
 import 'accounts/alldrivers.dart';
 import 'accounts/allusers.dart';
-import 'accounts/drivers.dart';
 import 'accounts/expensetoday.dart';
 import 'accounts/passengers.dart';
 import 'accounts/stocks.dart';
@@ -77,6 +77,7 @@ class _HomePageState extends State<HomePage> {
     userController.getAllDrivers();
     userController.getAllPassengers();
     walletController.getAllWallet();
+    walletController.getUserWallet(uToken);
     expensesController.getAllExpenses();
     expensesController.getAllExpensesToday();
     stocksController.getAllStocks();
@@ -102,6 +103,7 @@ class _HomePageState extends State<HomePage> {
       userController.getAllDrivers();
       userController.getAllPassengers();
       walletController.getAllWallet();
+      walletController.getUserWallet(uToken);
       expensesController.getAllExpenses();
       expensesController.getAllExpensesToday();
       stocksController.getAllStocks();
@@ -118,14 +120,38 @@ class _HomePageState extends State<HomePage> {
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            GestureDetector(
-                onTap: (){
-                  Get.to(()=> const AllUsers());
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom:18.0),
-                  child: Image.asset("assets/images/group.png",width:60,height:60,fit: BoxFit.cover,),
-                )),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GestureDetector(
+                    onTap: (){
+                      Get.to(()=> const AllUsers());
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom:18.0),
+                      child: Image.asset("assets/images/group.png",width:60,height:60,fit: BoxFit.cover,),
+                    )),
+                const SizedBox(width:40),
+                Center(child:
+                GetBuilder<WalletController>(builder: (controller) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.account_balance_wallet),
+                      const SizedBox(width: 10),
+                      walletController.isLoading
+                          ? const ShimmerWidget.rectangular(
+                          width: 100, height: 20)
+                          : Text("GHS ${walletController.wallet}",
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15)),
+                    ],
+                  );
+                })
+                ),
+              ],
+            ),
             const SizedBox(width:20),
             Padding(
               padding: const EdgeInsets.only(left:18.0,right:18),
