@@ -2,9 +2,11 @@ import 'package:flutter/foundation.dart';
 import "package:flutter/material.dart";
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import "package:get/get.dart";
+import 'package:get_storage/get_storage.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:taxinet_accounts/accounts/searchwallet.dart';
 import '../constants/app_colors.dart';
+import '../controller/usercontroller.dart';
 import '../controller/walletcontroller.dart';
 import 'package:http/http.dart' as http;
 
@@ -17,11 +19,16 @@ class AllWallets extends StatefulWidget {
 
 class _AllWalletsState extends State<AllWallets> {
   final WalletController controller = Get.find();
+  final UserController user = Get.find();
   var items;
+  double initialWallet = 0;
   late final  TextEditingController newAmountController = TextEditingController();
   final FocusNode newAmountFocusNode = FocusNode();
   final _formKey = GlobalKey<FormState>();
   bool isPosting = false;
+  final storage = GetStorage();
+  var username = "";
+  String uToken = "";
 
   void _startPosting()async{
     setState(() {
@@ -69,6 +76,38 @@ class _AllWalletsState extends State<AllWallets> {
         // print(response.body);
       }
     }
+  }
+
+  updateAccountsWallet() async {
+    final depositUrl = "https://taxinetghana.xyz/user_update_wallet/${user.userId}/";
+    final myLink = Uri.parse(depositUrl);
+    final res = await http.put(myLink, headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Authorization": "Token $uToken"
+    }, body: {
+      // "passenger": userid,
+      "user": user.userId,
+      "amount": initialWallet.toString(),
+    });
+    if (res.statusCode == 200) {
+      Get.snackbar("Hurray 😀", "Transaction completed successfully.",
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: snackColor);
+      // Get.to(()=> const Transfers());
+    }
+  }
+
+  @override
+  void initState(){
+    super.initState();
+    if (storage.read("userToken") != null) {
+      uToken = storage.read("userToken");
+    }
+    if (storage.read("username") != null) {
+      username = storage.read("username");
+    }
+    initialWallet = double.parse(controller.wallet);
   }
 
 
@@ -226,8 +265,10 @@ class _AllWalletsState extends State<AllWallets> {
                                                       );
                                                       return;
                                                     } else {
+                                                      initialWallet = initialWallet - double.parse(newAmountController.text);
                                                       double totalAmount = double.parse(controller.allWallets[index]['amount']) + double.parse(newAmountController.text);
                                                       updateWallet(controller.allWallets[index]['id'].toString(),totalAmount.toString(),controller.allWallets[index]['user'].toString());
+                                                      updateAccountsWallet();
                                                     }
                                                   },
                                                   // child: const Text("Send"),
@@ -361,8 +402,10 @@ class _AllWalletsState extends State<AllWallets> {
                                                       );
                                                       return;
                                                     } else {
+                                                      initialWallet = initialWallet + double.parse(newAmountController.text);
                                                       double totalAmount = double.parse(controller.allWallets[index]['amount']) - double.parse(newAmountController.text);
                                                       updateWallet(controller.allWallets[index]['id'].toString(),totalAmount.toString(),controller.allWallets[index]['user'].toString());
+                                                      updateAccountsWallet();
                                                     }
                                                   },
                                                   // child: const Text("Send"),

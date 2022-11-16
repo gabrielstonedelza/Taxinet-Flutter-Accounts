@@ -10,6 +10,8 @@ import 'package:get_storage/get_storage.dart';
 
 
 import '../constants/app_colors.dart';
+import '../controller/usercontroller.dart';
+import '../controller/walletcontroller.dart';
 import '../homepage.dart';
 
 class AddDrivesSalary extends StatefulWidget {
@@ -26,6 +28,7 @@ class _AddDrivesSalaryState extends State<AddDrivesSalary> {
   final username;
   _AddDrivesSalaryState({required this.driver,required this.username});
   late final TextEditingController _amountController;
+  final WalletController controller = Get.find();
 
   final _formKey = GlobalKey<FormState>();
 
@@ -36,6 +39,9 @@ class _AddDrivesSalaryState extends State<AddDrivesSalary> {
   String walletId = "";
   String initialWallet = "0.0";
   bool isLoading = true;
+  var username1 = "";
+  String uToken = "";
+  double initialAccountWallet = 0;
 
 
   Future<void> getDriversWallet() async {
@@ -73,6 +79,8 @@ class _AddDrivesSalaryState extends State<AddDrivesSalary> {
 
   bool hasInternet = false;
   late StreamSubscription internetSubscription;
+  final UserController user = Get.find();
+  var items;
 
   addSalary() async {
     const salaryUrl = "https://taxinetghana.xyz/add_monthly_salary/";
@@ -87,8 +95,10 @@ class _AddDrivesSalaryState extends State<AddDrivesSalary> {
         });
 
     if (response.statusCode == 201) {
+      initialAccountWallet = initialAccountWallet - double.parse(_amountController.text);
       double amount = double.parse(initialWallet) + double.parse(_amountController.text);
       updateWallet(walletId,amount.toString() , deDriver);
+      updateAccountsWallet();
       Get.offAll(()=> const HomePage());
     }
     else {
@@ -132,14 +142,39 @@ class _AddDrivesSalaryState extends State<AddDrivesSalary> {
       }
     }
   }
+  updateAccountsWallet() async {
+    final depositUrl = "https://taxinetghana.xyz/user_update_wallet/${user.userId}/";
+    final myLink = Uri.parse(depositUrl);
+    final res = await http.put(myLink, headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Authorization": "Token $uToken"
+    }, body: {
+      // "passenger": userid,
+      "user": user.userId,
+      "amount": initialAccountWallet.toString(),
+    });
+    if (res.statusCode == 200) {
+      Get.snackbar("Hurray 😀", "Transaction completed successfully.",
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: snackColor);
+      // Get.to(()=> const Transfers());
+    }
+  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    if (storage.read("userToken") != null) {
+      uToken = storage.read("userToken");
+    }
+    if (storage.read("username") != null) {
+      username1 = storage.read("username");
+    }
     _amountController = TextEditingController();
     getDriversWallet();
-    print(initialWallet);
+    initialAccountWallet = double.parse(controller.wallet);
   }
 
 

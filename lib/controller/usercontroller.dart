@@ -43,10 +43,11 @@ class UserController extends GetxController {
   late List passengerNames = [];
   late List passengersUniqueCodes = [];
   late List allPassengers = [];
+  String userId = "";
 
 
   bool isLoading = true;
-
+  late List profileDetails1 = [];
   @override
   void onInit() {
     // TODO: implement onInit
@@ -110,6 +111,39 @@ class UserController extends GetxController {
     } finally {
       isLoading = false;
       update();
+    }
+  }
+
+  Future<void> getUserDetails(String token) async {
+    try {
+      isLoading = true;
+      const profileLink = "https://taxinetghana.xyz/get_user/";
+      var link = Uri.parse(profileLink);
+      http.Response response = await http.get(link, headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Authorization": "Token $token"
+      });
+      if (response.statusCode == 200) {
+        var jsonData = jsonDecode(response.body);
+        profileDetails1 = jsonData;
+        // print(profileDetails1);
+        for (var i in profileDetails1) {
+          uniqueCode = i['unique_code'];
+          userId = i['id'].toString();
+        }
+        update();
+      }
+      else{
+        if (kDebugMode) {
+          print(response.body);
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print(e.toString());
+      }
+    } finally {
+      isLoading = false;
     }
   }
 

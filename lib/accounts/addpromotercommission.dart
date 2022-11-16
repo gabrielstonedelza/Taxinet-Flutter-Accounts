@@ -9,6 +9,8 @@ import 'package:get_storage/get_storage.dart';
 
 
 import '../constants/app_colors.dart';
+import '../controller/usercontroller.dart';
+import '../controller/walletcontroller.dart';
 import '../homepage.dart';
 
 class AddPromoterCommission extends StatefulWidget {
@@ -23,14 +25,39 @@ class AddPromoterCommission extends StatefulWidget {
 class _AddPromoterCommissionState extends State<AddPromoterCommission> {
   final promoter;
   final username;
+  final storage = GetStorage();
   _AddPromoterCommissionState({required this.promoter,this.username});
   late final TextEditingController _amountController;
+  final UserController user = Get.find();
+  final WalletController controller = Get.find();
 
   final _formKey = GlobalKey<FormState>();
 
   final FocusNode _amountFocusNode = FocusNode();
+  var username1 = "";
+  String uToken = "";
+  double initialAccountWallet = 0;
 
   bool isPosting = false;
+  updateAccountsWallet() async {
+    final depositUrl = "https://taxinetghana.xyz/user_update_wallet/${user.userId}/";
+    final myLink = Uri.parse(depositUrl);
+    final res = await http.put(myLink, headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Authorization": "Token $uToken"
+    }, body: {
+      // "passenger": userid,
+      "user": user.userId,
+      "amount": initialAccountWallet.toString(),
+    });
+    if (res.statusCode == 200) {
+      Get.snackbar("Hurray 😀", "Transaction completed successfully.",
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: snackColor);
+      // Get.to(()=> const Transfers());
+    }
+  }
 
 
   void _startPosting()async{
@@ -58,6 +85,8 @@ class _AddPromoterCommissionState extends State<AddPromoterCommission> {
         });
 
     if (response.statusCode == 201) {
+      initialAccountWallet = initialAccountWallet - double.parse(_amountController.text);
+      updateAccountsWallet();
       Get.offAll(()=> const HomePage());
     }
     else {
@@ -81,6 +110,13 @@ class _AddPromoterCommissionState extends State<AddPromoterCommission> {
     // TODO: implement initState
     super.initState();
     _amountController = TextEditingController();
+    if (storage.read("userToken") != null) {
+      uToken = storage.read("userToken");
+    }
+    if (storage.read("username") != null) {
+      username1 = storage.read("username");
+    }
+    initialAccountWallet = double.parse(controller.wallet);
   }
 
 

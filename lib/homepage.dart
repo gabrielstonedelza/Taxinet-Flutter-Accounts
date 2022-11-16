@@ -76,6 +76,7 @@ class _HomePageState extends State<HomePage> {
     userController.getAllUsers();
     userController.getAllDrivers();
     userController.getAllPassengers();
+    userController.getUserDetails(uToken);
     walletController.getAllWallet();
     walletController.getUserWallet(uToken);
     expensesController.getAllExpenses();
@@ -102,6 +103,7 @@ class _HomePageState extends State<HomePage> {
       userController.getAllUsers();
       userController.getAllDrivers();
       userController.getAllPassengers();
+      userController.getUserDetails(uToken);
       walletController.getAllWallet();
       walletController.getUserWallet(uToken);
       expensesController.getAllExpenses();

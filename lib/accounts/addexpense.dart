@@ -8,6 +8,8 @@ import 'package:get_storage/get_storage.dart';
 
 
 import '../constants/app_colors.dart';
+import '../controller/usercontroller.dart';
+import '../controller/walletcontroller.dart';
 import '../homepage.dart';
 
 class AddExpense extends StatefulWidget {
@@ -35,6 +37,9 @@ class _AddExpenseState extends State<AddExpense> {
   final storage = GetStorage();
   late String username = "";
   late String uToken = "";
+  final UserController user = Get.find();
+  final WalletController controller = Get.find();
+  double initialAccountWallet = 0;
 
   void _startPosting()async{
     setState(() {
@@ -65,6 +70,8 @@ class _AddExpenseState extends State<AddExpense> {
         });
 
     if (response.statusCode == 201) {
+      initialAccountWallet = initialAccountWallet - double.parse(_amountController.text);
+      updateAccountsWallet();
       Get.offAll(()=> const HomePage());
     }
     else {
@@ -77,6 +84,25 @@ class _AddExpenseState extends State<AddExpense> {
           duration: const Duration(seconds: 8)
       );
       return;
+    }
+  }
+  updateAccountsWallet() async {
+    final depositUrl = "https://taxinetghana.xyz/user_update_wallet/${user.userId}/";
+    final myLink = Uri.parse(depositUrl);
+    final res = await http.put(myLink, headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Authorization": "Token $uToken"
+    }, body: {
+      // "passenger": userid,
+      "user": user.userId,
+      "amount": initialAccountWallet.toString(),
+    });
+    if (res.statusCode == 200) {
+      Get.snackbar("Hurray 😀", "Transaction completed successfully.",
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: snackColor);
+      // Get.to(()=> const Transfers());
     }
   }
 
@@ -95,6 +121,7 @@ class _AddExpenseState extends State<AddExpense> {
     _reasonController = TextEditingController();
     _itemNameController = TextEditingController();
     _quantityController = TextEditingController();
+    initialAccountWallet = double.parse(controller.wallet);
   }
 
 
