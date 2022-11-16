@@ -112,10 +112,6 @@ class _PassengersState extends State<Passengers> {
 
                                   const Divider(),
                                   // const SizedBox(height:5),
-                                  ListTile(
-                                      title: const Text("Unique Code",),
-                                      subtitle: Text(items['unique_code'])
-                                  ),
                                 ],
                               )
                           )

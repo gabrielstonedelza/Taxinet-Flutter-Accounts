@@ -124,10 +124,7 @@ class _DriversState extends State<Drivers> {
                                             title: const Text("Car Name",),
                                             subtitle: Text(items['car_name'])
                                         ),
-                                        ListTile(
-                                            title: const Text("Unique Code",),
-                                            subtitle: Text(items['unique_code'])
-                                        ),
+
                                         ListTile(
                                             title: const Text("Taxinet Number",),
                                             subtitle: Text(items['taxinet_number'])

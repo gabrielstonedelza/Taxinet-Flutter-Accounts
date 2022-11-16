@@ -200,7 +200,17 @@ class _AllUsersState extends State<AllUsers> {
                                 child: Text(items['username'],style: const TextStyle(fontSize: 15,fontWeight: FontWeight.bold,color: Colors.black),),
                               ),
                             ),
-                            subtitle : items['user_blocked'] ? const Center(child: Text("User is blocked")) : const Text("")
+                            subtitle : Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    const Text("Unique Code: ",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold)),
+                                    Text(items['unique_code']),
+                                  ],
+                                ),
+                                items['user_blocked'] ? const Center(child: Text("User is blocked")) : const Text("")
+                              ],
+                            )
 
                         ),
                       ),
