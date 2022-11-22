@@ -65,7 +65,7 @@ class _DriversForInspectionState extends State<DriversForInspection> {
                   ),
                   child: ListTile(
                     onTap: (){
-                      Get.to(() => CallForInspection(driver:controller.allDrivers[index]['user'].toString()));
+                      Get.to(() => CallForInspection(phone:controller.allDrivers[index]['get_drivers_phone_number'],driver:controller.allDrivers[index]['user'].toString()));
                     },
                     leading: CircleAvatar(
                       backgroundImage: NetworkImage(items['driver_profile_pic']),

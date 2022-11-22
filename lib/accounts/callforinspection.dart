@@ -4,19 +4,22 @@ import "package:get/get.dart";
 import 'package:http/http.dart' as http;
 import '../constants/app_colors.dart';
 import '../homepage.dart';
+import '../sendsms.dart';
 
 
 class CallForInspection extends StatefulWidget {
   final driver;
-  const CallForInspection({Key? key,required this.driver}) : super(key: key);
+  final phone;
+  const CallForInspection({Key? key,required this.driver,required this.phone}) : super(key: key);
 
   @override
-  State<CallForInspection> createState() => _CallForInspectionState(driver:this.driver);
+  State<CallForInspection> createState() => _CallForInspectionState(driver:this.driver,phone:this.phone);
 }
 
 class _CallForInspectionState extends State<CallForInspection> {
   final driver;
-  _CallForInspectionState({required this.driver});
+  final phone;
+  _CallForInspectionState({required this.driver,required this.phone});
   List inspectionDays = [
     'Monday',
     'Tuesday',
@@ -36,6 +39,7 @@ class _CallForInspectionState extends State<CallForInspection> {
   bool isPosting = false;
   late DateTime _dateTime;
   TimeOfDay _timeOfDay = const TimeOfDay(hour: 6, minute: 00);
+  final SendSmsController sendSms = SendSmsController();
 
   void _startPosting()async{
     setState(() {
@@ -61,6 +65,9 @@ class _CallForInspectionState extends State<CallForInspection> {
     });
     if (response.statusCode == 201) {
       Get.offAll(() => const HomePage());
+      String driversPhone = phone;
+      driversPhone = driversPhone.replaceFirst("0", '+233');
+      sendSms.sendMySms(driversPhone, "Taxinet", "Please you are to report to Taxinet office for inspection on $currentSelectedDay at exactly ${timeController.text}.Thank you.");
       Get.snackbar("Success 😀", "",
           duration: const Duration(seconds: 5),
           snackPosition: SnackPosition.BOTTOM,
@@ -69,7 +76,7 @@ class _CallForInspectionState extends State<CallForInspection> {
     }
     else{
       if (kDebugMode) {
-        print(response.body);
+        // print(response.body);
       }
       Get.snackbar("Sorry 😢", "something went wrong,please try again later.",
           duration: const Duration(seconds: 5),
