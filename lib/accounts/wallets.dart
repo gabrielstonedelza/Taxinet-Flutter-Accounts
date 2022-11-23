@@ -200,7 +200,7 @@ class _AllWalletsState extends State<AllWallets> {
             itemCount: controller.allWallets != null ? controller.allWallets.length : 0,
             itemBuilder: (BuildContext context, int index) {
               items = controller.allWallets[index];
-              return Card(
+              return items['get_full_name'] == "Taxinet Accounts" ? Container() : Card(
                 elevation: 12,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
