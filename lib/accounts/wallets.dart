@@ -132,7 +132,7 @@ class _AllWalletsState extends State<AllWallets> {
     }
     else{
       if (kDebugMode) {
-        // print(response.body);
+        print(response.body);
       }
     }
   }
@@ -146,7 +146,7 @@ class _AllWalletsState extends State<AllWallets> {
     }, body: {
       // "passenger": userid,
       "user": user.userId,
-      "amount": initialWallet.toString(),
+      "amount": initialWallet.toStringAsFixed(2),
     });
     if (res.statusCode == 200) {
       Get.snackbar("Hurray 😀", "Transaction completed successfully.",
@@ -256,7 +256,7 @@ class _AllWalletsState extends State<AllWallets> {
                                                     IconButton(
                                                         onPressed: () {
                                                           setState(() {
-                                                            newAmountController.text = "";
+                                                            newAmountController2.text = "";
                                                           });
                                                           Navigator.pop(context);
                                                         },
@@ -371,7 +371,7 @@ class _AllWalletsState extends State<AllWallets> {
                                                         _startPosting();
                                                         initialWallet = initialWallet + double.parse(newAmountController2.text);
                                                         double totalAmount = double.parse(controller.allWallets[index]['amount']) - double.parse(newAmountController2.text);
-                                                        updateWallet(controller.allWallets[index]['id'].toString(),totalAmount.toString(),controller.allWallets[index]['user'].toString());
+                                                        updateWallet(controller.allWallets[index]['id'].toString(),totalAmount.toStringAsFixed(2),controller.allWallets[index]['user'].toString());
                                                         updateAccountsWallet();
                                                         addReason(controller.allWallets[index]['user'].toString(),newAmountController2.text);
                                                       }
@@ -434,7 +434,7 @@ class _AllWalletsState extends State<AllWallets> {
                                                     IconButton(
                                                         onPressed: () {
                                                           setState(() {
-                                                            newAmountController.text = "";
+                                                            newAmountController2.text = "";
                                                           });
                                                           Navigator.pop(context);
                                                         },
