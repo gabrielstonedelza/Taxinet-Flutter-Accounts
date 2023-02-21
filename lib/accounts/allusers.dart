@@ -201,6 +201,7 @@ class _AllUsersState extends State<AllUsers> {
                               ),
                             ),
                             subtitle : Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Row(
                                   children: [
